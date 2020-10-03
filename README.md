@@ -23,3 +23,8 @@ However, word2vec_huffman took much longer time than other methods in spite of i
 Generally chi squared test showed best performance among 4 methods, taking into account its small time consumption and relatively good result. However, chi squared test did not consider the importance of word frequency, which means that what mattered was whether a word appeared instead of how many times a word appeared. Hence, this method could be further improved.
 
 In addition, jieba tokenization is quite time-consuming if the data file is large. Similarly, multiprocessing is used and the time to tokenize has dropped by approximately 30%.
+
+
+
+## Web Demo
+![image](https://github.com/Leonora-cat/extract_keywords/blob/main/web_page.png)
