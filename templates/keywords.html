@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>extract feature</title>
+	<link rel="stylesheet" href="">
+</head>
+<script src="static/jquery-1.11.1.min.js" type="text/javascript" charset="utf-8"></script>
+<body>
+	<div style='text-align: center'>
+		<p align="center">Please upload an excel file in the form of 2 columns: type and content without header</p>
+		<form action = "http://localhost:5000/upload_file" method = "POST" 
+         enctype = "multipart/form-data">
+	         <input type = "file" name = "file" />
+	         <input type = "submit"/>
+	    </form>
+	    <p style='text-align: center'>{{prompt}}</p>
+	    <button type="button" onclick="tokenize()">start tokenizing</button>
+	    <div id="token_prompt_ing" style="visibility:hidden">
+	    	<p>tokenizing</p>
+	    </div>
+		<div id="token_prompt" style="visibility:hidden">
+			<p>successfully tokenized</p>
+		</div>
+		<br><br>
+		<div id='choose_method' style="visibility:hidden">
+			<p>Click on the buttons below to get the result using the follwing methods</p>
+	        <button type="button" onclick="tf_idf()" style='margin:10px'>tf-idf</button>
+		    <button type="button" onclick="word2vec()" style='margin:10px'>word2vec</button>
+		    <button type="button" onclick="chi_square()" style='margin:10px'>chi_square</button>
+		    <button type="button" onclick="intersection()" style='margin:10px'>intersection</button>
+		    <p>If you have clicked on tf-idf/word2vec/chi square button, </br>please do not click on intersection button until the download link for tf-idf/word2vec/chisquare has appeared, and vice versa (for time saving)</p>
+		</div>
+
+		<div style="width: 100%">
+			<div id="tf_idf_prompt" style="visibility:hidden">
+	        	<p>processing using tf-idf</p>
+	    	</div>
+			<div id="word2vec_prompt" style="visibility:hidden">
+	        	<p>processing using word2vec</p>
+	    	</div>
+			<div id="chi_square_prompt" style="visibility:hidden">
+	        	<p>processing using chi square</p>
+	    	</div>
+			<div id="intersection_prompt" style="visibility:hidden">
+	        	<p>processing using intersection</p>
+	    	</div>
+		</div>
+		
+		<div style="width: 100%; margin-left: 80px">
+			<div id="res_tf_idf" style="visibility:hidden;float: left;margin: 15px">
+				<a href="/download" id="tf_idf_url">download extracted keywords via tf-idf</a><br><br>
+			</div>
+			<div id="res_word2vec" style="visibility:hidden;float: left;margin: 15px">
+				<a href="/download" id="word2vec_url">download extracted keywords via word2vec</a><br><br>
+			</div>
+			<div id="res_chi_square" style="visibility:hidden;float: left;margin: 15px">
+				<a href="/download" id="chi_square_url">download extracted keywords via chi square</a><br><br>
+			</div>
+			<div id="res_intersection" style="visibility:hidden;float: left;margin: 15px">
+				<a href="/download" id="intersection_url">download extracted keywords via intersection</a><br><br>
+			</div>
+		</div>
+	</div>
+</body>
+<script>
+	function tokenize(){
+		document.getElementById("token_prompt_ing").style.visibility = "visible";
+		$.ajax({
+			type: "get",
+			contentType: "application/x-www-form-urlencoded; charset=utf-8",
+			url: '/tokenize',
+			async: true,
+			success: function(res){
+				document.getElementById("token_prompt").style.visibility = "visible";
+				document.getElementById("choose_method").style.visibility = "visible";
+			},
+			error: function(xhr, text, type){
+				alert('ERROR!');
+				alert(errorText + ':' + errorType);
+        		alert(xhr.status + ':' + xhr.statusText);
+			}
+		})
+	}
+	function tf_idf(){
+		document.getElementById("tf_idf_prompt").style.visibility = "visible";
+		$.ajax({
+			type: 'get',
+			contentType: "application/x-www-form-urlencoded; charset=utf-8",
+			url: '/run_tf_idf',
+			success: function(res_url){
+				document.getElementById("tf_idf_url").href = '/download/' + res_url;
+
+				document.getElementById("res_tf_idf").style.visibility = "visible";
+			},
+			error: function(xhr, text, type){
+				alert('ERROR!')
+				alert(errorText + ':' + errorType);
+        		alert(xhr.status + ':' + xhr.statusText);
+			}
+		})
+	}
+	function word2vec(){
+		document.getElementById("word2vec_prompt").style.visibility = "visible";
+		$.ajax({
+			type: 'get',
+			contentType: "application/x-www-form-urlencoded; charset=utf-8",
+			url: '/run_word2vec',
+			success: function(res_url){
+				document.getElementById("word2vec_url").href = '/download/' + res_url;
+				document.getElementById("res_word2vec").style.visibility = "visible";
+			},
+			error: function(xhr, text, type){
+				alert('ERROR!')
+				alert(errorText + ':' + errorType);
+        		alert(xhr.status + ':' + xhr.statusText);
+			}
+		})
+	}
+	function chi_square(){
+		document.getElementById("chi_square_prompt").style.visibility = "visible";
+		$.ajax({
+			type: 'get',
+			contentType: "application/x-www-form-urlencoded; charset=utf-8",
+			url: '/run_chi_square',
+			success: function(res_url){
+				document.getElementById("chi_square_url").href = '/download/' + res_url;
+				document.getElementById("res_chi_square").style.visibility = "visible";
+			},
+			error: function(xhr, text, type){
+				alert('ERROR!')
+				alert(errorText + ':' + errorType);
+        		alert(xhr.status + ':' + xhr.statusText);
+			}
+		})
+	}
+	function intersection(){
+		document.getElementById("intersection_prompt").style.visibility = "visible";
+		$.ajax({
+			type: 'get',
+			contentType: "application/x-www-form-urlencoded; charset=utf-8",
+			url: '/run_intersection',
+			success: function(res_url){
+				document.getElementById("intersection_url").href = '/download/' + res_url;
+				document.getElementById("res_intersection").style.visibility = "visible";
+			},
+			error: function(xhr, text, type){
+				alert('ERROR!')
+				alert(errorText + ':' + errorType);
+        		alert(xhr.status + ':' + xhr.statusText);
+			}
+		})
+	}
+</script>
+</html>
